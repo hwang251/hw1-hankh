@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<collectionReaderDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>genetagging.cpe.GeneTaggingCollectionReader</implementationName>
+  <implementationName>genetagging.cpe.GeneTaggingCasConsumer</implementationName>
   <processingResourceMetaData>
-    <name>GeneTaggingCollectionReader</name>
+    <name>GeneTaggingCasConsumer</name>
     <description/>
     <version>1.0</version>
     <vendor/>
     <configurationParameters>
       <configurationParameter>
-        <name>InputFile</name>
-        <description>Input file for this Collection Reader</description>
+        <name>OutputFile</name>
+        <description>Output file for this CAS Consumer</description>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
@@ -18,33 +18,33 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>InputFile</name>
+        <name>OutputFile</name>
         <value>
-          <string>src/main/resources/data/hw1.in</string>
+          <string>hw1-hankh.out</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
-        <import location="InputTypeSystem.xml"/>
+        <import location="../NcbiResultsTypeSystem.xml"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
       <capability>
-        <inputs/>
-        <outputs>
-          <type allAnnotatorFeatures="true">Input</type>
-        </outputs>
+        <inputs>
+          <type allAnnotatorFeatures="true">genetagging.NcbiResults</type>
+        </inputs>
+        <outputs/>
         <languagesSupported/>
       </capability>
     </capabilities>
     <operationalProperties>
       <modifiesCas>true</modifiesCas>
       <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
-      <outputsNewCASes>true</outputsNewCASes>
+      <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </processingResourceMetaData>
   <resourceManagerConfiguration/>
-</collectionReaderDescription>
+</casConsumerDescription>

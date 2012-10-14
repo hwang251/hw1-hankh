@@ -1,5 +1,6 @@
 package genetagging.cpe;
 import genetagging.Input;
+import genetagging.NcbiResults;
 import genetagging.PosTagNamedEntity;
 
 import java.io.File;
@@ -45,11 +46,11 @@ public class GeneTaggingCasConsumer extends CasConsumer_ImplBase {
       FileOutputStream fos = new FileOutputStream(mOutputFile);
       
       // retrieve annotations
-      Iterator it = jcas.getAnnotationIndex(PosTagNamedEntity.type).iterator();
+      Iterator it = jcas.getAnnotationIndex(NcbiResults.type).iterator();
       while (it.hasNext()) {
-        PosTagNamedEntity ptne = (PosTagNamedEntity) it.next();
+        NcbiResults ncbiResults = (NcbiResults) it.next();
         String output = String.format("%s|%d %d|%s\n", 
-                ptne.getId(), ptne.getBegin(), ptne.getEnd(), ptne.getNamedEntitiy());
+                ncbiResults.getId(), ncbiResults.getBegin(), ncbiResults.getEnd(), ncbiResults.getResult());
         fos.write(output.getBytes());
       }
       fos.close();

@@ -1,6 +1,6 @@
-package genetagging;
 
-/* First created by JCasGen Wed Oct 10 11:29:56 EDT 2012 */
+/* First created by JCasGen Sat Oct 13 17:27:44 EDT 2012 */
+package genetagging;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -16,7 +16,7 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
 /** 
  * Updated by JCasGen Sat Oct 13 18:16:32 EDT 2012
  * @generated */
-public class Input_Type extends Annotation_Type {
+public class NcbiResults_Type extends Annotation_Type {
   /** @generated */
   @Override
   protected FSGenerator getFSGenerator() {return fsGenerator;}
@@ -24,26 +24,28 @@ public class Input_Type extends Annotation_Type {
   private final FSGenerator fsGenerator = 
     new FSGenerator() {
       public FeatureStructure createFS(int addr, CASImpl cas) {
-  			 if (Input_Type.this.useExistingInstance) {
+  			 if (NcbiResults_Type.this.useExistingInstance) {
   			   // Return eq fs instance if already created
-  		     FeatureStructure fs = Input_Type.this.jcas.getJfsFromCaddr(addr);
+  		     FeatureStructure fs = NcbiResults_Type.this.jcas.getJfsFromCaddr(addr);
   		     if (null == fs) {
-  		       fs = new Input(addr, Input_Type.this);
-  			   Input_Type.this.jcas.putJfsFromCaddr(addr, fs);
+  		       fs = new NcbiResults(addr, NcbiResults_Type.this);
+  			   NcbiResults_Type.this.jcas.putJfsFromCaddr(addr, fs);
   			   return fs;
   		     }
   		     return fs;
-        } else return new Input(addr, Input_Type.this);
+        } else return new NcbiResults(addr, NcbiResults_Type.this);
   	  }
     };
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = Input.typeIndexID;
+  public final static int typeIndexID = NcbiResults.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("genetagging.Input");
- 
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("genetagging.NcbiResults");
+
+
+
   /** @generated */
   final Feature casFeat_id;
   /** @generated */
@@ -51,32 +53,32 @@ public class Input_Type extends Annotation_Type {
   /** @generated */ 
   public String getId(int addr) {
         if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "genetagging.Input");
+      jcas.throwFeatMissing("id", "genetagging.NcbiResults");
     return ll_cas.ll_getStringValue(addr, casFeatCode_id);
   }
   /** @generated */    
   public void setId(int addr, String v) {
         if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "genetagging.Input");
+      jcas.throwFeatMissing("id", "genetagging.NcbiResults");
     ll_cas.ll_setStringValue(addr, casFeatCode_id, v);}
     
   
  
   /** @generated */
-  final Feature casFeat_text;
+  final Feature casFeat_result;
   /** @generated */
-  final int     casFeatCode_text;
+  final int     casFeatCode_result;
   /** @generated */ 
-  public String getText(int addr) {
-        if (featOkTst && casFeat_text == null)
-      jcas.throwFeatMissing("text", "genetagging.Input");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_text);
+  public String getResult(int addr) {
+        if (featOkTst && casFeat_result == null)
+      jcas.throwFeatMissing("result", "genetagging.NcbiResults");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_result);
   }
   /** @generated */    
-  public void setText(int addr, String v) {
-        if (featOkTst && casFeat_text == null)
-      jcas.throwFeatMissing("text", "genetagging.Input");
-    ll_cas.ll_setStringValue(addr, casFeatCode_text, v);}
+  public void setResult(int addr, String v) {
+        if (featOkTst && casFeat_result == null)
+      jcas.throwFeatMissing("result", "genetagging.NcbiResults");
+    ll_cas.ll_setStringValue(addr, casFeatCode_result, v);}
     
   
 
@@ -84,7 +86,7 @@ public class Input_Type extends Annotation_Type {
 
   /** initialize variables to correspond with Cas Type and Features
 	* @generated */
-  public Input_Type(JCas jcas, Type casType) {
+  public NcbiResults_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 
@@ -93,8 +95,8 @@ public class Input_Type extends Annotation_Type {
     casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
 
  
-    casFeat_text = jcas.getRequiredFeatureDE(casType, "text", "uima.cas.String", featOkTst);
-    casFeatCode_text  = (null == casFeat_text) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_text).getCode();
+    casFeat_result = jcas.getRequiredFeatureDE(casType, "result", "uima.cas.String", featOkTst);
+    casFeatCode_result  = (null == casFeat_result) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_result).getCode();
 
   }
 }

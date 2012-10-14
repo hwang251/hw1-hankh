@@ -3,14 +3,14 @@
     <collectionReader>
         <collectionIterator>
             <descriptor>
-                <import location="descriptors/GeneTaggingCollectionReader.xml"/>
+                <import location="descriptors/collection_processing_engine/GeneTaggingCollectionReader.xml"/>
             </descriptor>
         </collectionIterator>
     </collectionReader>
     <casProcessors casPoolSize="3" processingUnitThreadCount="1">
-    	<casProcessor deployment="integrated" name="PosTagNamedEntityAnnotator">
+    	<casProcessor deployment="integrated" name="GeneTaggingTAE">
             <descriptor>
-                <import location="descriptors/PosTagNamedEntityAnnotator.xml"/>
+                <import location="descriptors/collection_processing_engine/GeneTaggingTAE.xml"/>
             </descriptor>
             <deploymentParameters/>
             <errorHandling>
@@ -22,7 +22,7 @@
         </casProcessor>
         <casProcessor deployment="integrated" name="GeneTaggingCasConsumer">
             <descriptor>
-                <import location="descriptors/GeneTaggingCasConsumer.xml"/>
+                <import location="descriptors/collection_processing_engine/GeneTaggingCasConsumer.xml"/>
             </descriptor>
             <deploymentParameters/>
             <errorHandling>
