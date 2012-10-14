@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Oct 13 18:16:32 EDT 2012
- * XML source: C:/Users/Hank/workspace/hw1-hankh/src/main/resources/descriptors/collection_processing_engine/GeneTaggingTAE.xml
+ * Updated by JCasGen Sat Oct 13 23:55:50 EDT 2012
+ * XML source: C:/Users/Hank/workspace/hw1-hankh/src/main/resources/descriptors/collection_processing_engine/GeneTaggingCasConsumer.xml
  * @generated */
 public class NcbiResults extends Annotation {
   /** @generated

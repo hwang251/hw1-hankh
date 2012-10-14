@@ -28,8 +28,8 @@ public class SummaryXmlParser extends DefaultHandler{
   
   // Temporary variables
   private String mTempVal;
-//  private List<String> mTempStrList;
   private Set<String> mTempStrSet;
+  
   private boolean mHasGeneticSource;
   
   private String currentAttrNameVal;
@@ -45,7 +45,6 @@ public class SummaryXmlParser extends DefaultHandler{
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) {
     if (qName.equalsIgnoreCase(TAG_DOCSUM)) {
-//      mTempStrList = new ArrayList<String>();
       mTempStrSet = new HashSet<String>();
     }
     else if (qName.equalsIgnoreCase(TAG_ITEM)) {
@@ -62,19 +61,24 @@ public class SummaryXmlParser extends DefaultHandler{
   public void endElement(String uri, String localName, String qName) {
     if (qName.equalsIgnoreCase(TAG_ITEM)) {
       if (currentAttrNameVal.equals(ATTR_NAME_VAL_DESC)) {
-//        mTempStrList.add(mTempVal);
-        mTempStrSet.add(mTempVal);
+        // Only add "gene" if it's length is greater than 2
+        if (mTempVal.length() > 2) {
+          mTempStrSet.add(mTempVal.trim());
+        }
       }
       else if (currentAttrNameVal.equals(ATTR_NAME_VAL_OTHER_DESG)) {
-//        mTempStrList.addAll(Arrays.asList(mTempVal.split("\\|")));
-        mTempStrSet.addAll(Arrays.asList(mTempVal.split("\\|")));
+        for (String gene : Arrays.asList(mTempVal.split("\\|"))) {
+          // Only add "gene" if it's length is greater than 2
+          if (gene.length() > 2) {
+            mTempStrSet.add(gene.trim());
+          }
+        }
       }
       else if (currentAttrNameVal.equals(ATTR_NAME_VAL_GENE_SRC)) {
         mHasGeneticSource = mTempVal.length() > 0;
       }
     }
     else if (qName.equalsIgnoreCase(TAG_DOCSUM) && mHasGeneticSource) {
-//      mNameList.addAll(mTempStrList);
       mNameList.addAll(mTempStrSet);
     }
     mTempVal = "";

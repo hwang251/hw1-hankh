@@ -27,6 +27,7 @@
     <typeSystemDescription>
       <imports>
         <import location="../NcbiResultsTypeSystem.xml"/>
+        <import location="../LocalGeneSearchTypeSystem.xml"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -35,6 +36,7 @@
       <capability>
         <inputs>
           <type allAnnotatorFeatures="true">genetagging.NcbiResults</type>
+          <type allAnnotatorFeatures="true">genetagging.FoundGene</type>
         </inputs>
         <outputs/>
         <languagesSupported/>

@@ -1,4 +1,5 @@
 package genetagging.cpe;
+import genetagging.FoundGene;
 import genetagging.Input;
 import genetagging.NcbiResults;
 import genetagging.PosTagNamedEntity;
@@ -45,14 +46,24 @@ public class GeneTaggingCasConsumer extends CasConsumer_ImplBase {
     try {
       FileOutputStream fos = new FileOutputStream(mOutputFile);
       
-      // retrieve annotations
-      Iterator it = jcas.getAnnotationIndex(NcbiResults.type).iterator();
-      while (it.hasNext()) {
-        NcbiResults ncbiResults = (NcbiResults) it.next();
+      // retrieve Local Gene Search Results
+      Iterator foundGeneIter = jcas.getAnnotationIndex(FoundGene.type).iterator();
+      while (foundGeneIter.hasNext()) {
+        FoundGene foundGene = (FoundGene) foundGeneIter.next();
+        String output = String.format("%s|%d %d|%s\n", 
+                foundGene.getId(), foundGene.getBegin(), foundGene.getEnd(), foundGene.getGene());
+        fos.write(output.getBytes());
+      }
+      
+      // retrieve NCBI Results Annotations
+      Iterator ncbiIter = jcas.getAnnotationIndex(NcbiResults.type).iterator();
+      while (ncbiIter.hasNext()) {
+        NcbiResults ncbiResults = (NcbiResults) ncbiIter.next();
         String output = String.format("%s|%d %d|%s\n", 
                 ncbiResults.getId(), ncbiResults.getBegin(), ncbiResults.getEnd(), ncbiResults.getResult());
         fos.write(output.getBytes());
       }
+      
       fos.close();
     } catch (IOException e) {
       throw new ResourceProcessException(e);

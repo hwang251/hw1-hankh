@@ -32,7 +32,6 @@ public class GeneTaggingCollectionReader extends CollectionReader_ImplBase {
       throw new ResourceInitializationException("file_not_found",
               new Object[]{ PARAM_INPUTFILE, this.getMetaData().getName(), mInputFile.getPath()});
     }
-    System.out.println("test");
   }
   
   @Override
@@ -59,7 +58,6 @@ public class GeneTaggingCollectionReader extends CollectionReader_ImplBase {
     }
     
     processFile = true;
-    System.out.println("test2");
   }
 
   @Override

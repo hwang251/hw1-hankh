@@ -39,7 +39,7 @@ public class PosTagNamedEntityAnnotator extends JCasAnnotator_ImplBase {
         ptne.setBegin(begin);
         ptne.setEnd(end);
         ptne.setId(input.getId());
-        ptne.setNamedEntitiy(text.substring(begin, end));
+        ptne.setNamedEntity(text.substring(begin, end));
         ptne.addToIndexes();
       }
     }

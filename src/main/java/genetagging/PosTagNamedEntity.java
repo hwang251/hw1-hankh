@@ -11,8 +11,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Oct 13 18:16:32 EDT 2012
- * XML source: C:/Users/Hank/workspace/hw1-hankh/src/main/resources/descriptors/collection_processing_engine/GeneTaggingTAE.xml
+ * Updated by JCasGen Sun Oct 14 11:50:08 EDT 2012
+ * XML source: C:/Users/Hank/workspace/hw1-hankh/src/main/resources/descriptors/PosTagNamedEntityTypeSystem.xml
  * @generated */
 public class PosTagNamedEntity extends Annotation {
   /** @generated
@@ -81,21 +81,21 @@ public class PosTagNamedEntity extends Annotation {
    
     
   //*--------------*
-  //* Feature: namedEntitiy
+  //* Feature: namedEntity
 
-  /** getter for namedEntitiy - gets 
+  /** getter for namedEntity - gets 
    * @generated */
-  public String getNamedEntitiy() {
-    if (PosTagNamedEntity_Type.featOkTst && ((PosTagNamedEntity_Type)jcasType).casFeat_namedEntitiy == null)
-      jcasType.jcas.throwFeatMissing("namedEntitiy", "genetagging.PosTagNamedEntity");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((PosTagNamedEntity_Type)jcasType).casFeatCode_namedEntitiy);}
+  public String getNamedEntity() {
+    if (PosTagNamedEntity_Type.featOkTst && ((PosTagNamedEntity_Type)jcasType).casFeat_namedEntity == null)
+      jcasType.jcas.throwFeatMissing("namedEntity", "genetagging.PosTagNamedEntity");
+    return jcasType.ll_cas.ll_getStringValue(addr, ((PosTagNamedEntity_Type)jcasType).casFeatCode_namedEntity);}
     
-  /** setter for namedEntitiy - sets  
+  /** setter for namedEntity - sets  
    * @generated */
-  public void setNamedEntitiy(String v) {
-    if (PosTagNamedEntity_Type.featOkTst && ((PosTagNamedEntity_Type)jcasType).casFeat_namedEntitiy == null)
-      jcasType.jcas.throwFeatMissing("namedEntitiy", "genetagging.PosTagNamedEntity");
-    jcasType.ll_cas.ll_setStringValue(addr, ((PosTagNamedEntity_Type)jcasType).casFeatCode_namedEntitiy, v);}    
+  public void setNamedEntity(String v) {
+    if (PosTagNamedEntity_Type.featOkTst && ((PosTagNamedEntity_Type)jcasType).casFeat_namedEntity == null)
+      jcasType.jcas.throwFeatMissing("namedEntity", "genetagging.PosTagNamedEntity");
+    jcasType.ll_cas.ll_setStringValue(addr, ((PosTagNamedEntity_Type)jcasType).casFeatCode_namedEntity, v);}    
   }
 
     

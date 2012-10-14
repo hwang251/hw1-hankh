@@ -14,7 +14,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Oct 13 18:16:32 EDT 2012
+ * Updated by JCasGen Sun Oct 14 11:50:08 EDT 2012
  * @generated */
 public class PosTagNamedEntity_Type extends Annotation_Type {
   /** @generated */
@@ -63,20 +63,20 @@ public class PosTagNamedEntity_Type extends Annotation_Type {
   
  
   /** @generated */
-  final Feature casFeat_namedEntitiy;
+  final Feature casFeat_namedEntity;
   /** @generated */
-  final int     casFeatCode_namedEntitiy;
+  final int     casFeatCode_namedEntity;
   /** @generated */ 
-  public String getNamedEntitiy(int addr) {
-        if (featOkTst && casFeat_namedEntitiy == null)
-      jcas.throwFeatMissing("namedEntitiy", "genetagging.PosTagNamedEntity");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_namedEntitiy);
+  public String getNamedEntity(int addr) {
+        if (featOkTst && casFeat_namedEntity == null)
+      jcas.throwFeatMissing("namedEntity", "genetagging.PosTagNamedEntity");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_namedEntity);
   }
   /** @generated */    
-  public void setNamedEntitiy(int addr, String v) {
-        if (featOkTst && casFeat_namedEntitiy == null)
-      jcas.throwFeatMissing("namedEntitiy", "genetagging.PosTagNamedEntity");
-    ll_cas.ll_setStringValue(addr, casFeatCode_namedEntitiy, v);}
+  public void setNamedEntity(int addr, String v) {
+        if (featOkTst && casFeat_namedEntity == null)
+      jcas.throwFeatMissing("namedEntity", "genetagging.PosTagNamedEntity");
+    ll_cas.ll_setStringValue(addr, casFeatCode_namedEntity, v);}
     
   
 
@@ -93,8 +93,8 @@ public class PosTagNamedEntity_Type extends Annotation_Type {
     casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
 
  
-    casFeat_namedEntitiy = jcas.getRequiredFeatureDE(casType, "namedEntitiy", "uima.cas.String", featOkTst);
-    casFeatCode_namedEntitiy  = (null == casFeat_namedEntitiy) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_namedEntitiy).getCode();
+    casFeat_namedEntity = jcas.getRequiredFeatureDE(casType, "namedEntity", "uima.cas.String", featOkTst);
+    casFeatCode_namedEntity  = (null == casFeat_namedEntity) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_namedEntity).getCode();
 
   }
 }

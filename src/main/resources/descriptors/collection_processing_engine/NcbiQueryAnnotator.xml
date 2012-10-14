@@ -12,8 +12,8 @@
     <configurationParameterSettings/>
     <typeSystemDescription>
       <imports>
-        <import location="../PosTagNamedEntityTypeSystem.xml"/>
         <import location="../NcbiResultsTypeSystem.xml"/>
+        <import location="../LocalGeneSearchTypeSystem.xml"/>
       </imports>
     </typeSystemDescription>
     <typePriorities/>
@@ -21,7 +21,7 @@
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">genetagging.PosTagNamedEntity</type>
+          <type allAnnotatorFeatures="true">genetagging.UnfoundNamedEntity</type>
         </inputs>
         <outputs>
           <type allAnnotatorFeatures="true">genetagging.NcbiResults</type>
@@ -35,5 +35,13 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
+  <externalResourceDependencies>
+    <externalResourceDependency>
+      <key>NcbiGeneSet</key>
+      <description/>
+      <interfaceName>genetagging.GeneSetResource</interfaceName>
+      <optional>false</optional>
+    </externalResourceDependency>
+  </externalResourceDependencies>
   <resourceManagerConfiguration/>
 </analysisEngineDescription>

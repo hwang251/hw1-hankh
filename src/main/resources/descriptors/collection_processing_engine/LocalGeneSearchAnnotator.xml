@@ -1,41 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>false</primitive>
-  <delegateAnalysisEngineSpecifiers>
-    <delegateAnalysisEngine key="LocalGeneSearchAnnotator">
-      <import location="LocalGeneSearchAnnotator.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="PosTagNamedEntityAnnotator">
-      <import location="PosTagNamedEntityAnnotator.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="NcbiQueryAnnotator">
-      <import location="NcbiQueryAnnotator.xml"/>
-    </delegateAnalysisEngine>
-  </delegateAnalysisEngineSpecifiers>
+  <primitive>true</primitive>
+  <annotatorImplementationName>genetagging.cpe.LocalGeneSearchAnnotator</annotatorImplementationName>
   <analysisEngineMetaData>
-    <name>GeneTagging_TAE</name>
+    <name>LocalGeneSearchAnnotator</name>
     <description/>
     <version>1.0</version>
     <vendor/>
-    <configurationParameters searchStrategy="language_fallback"/>
+    <configurationParameters/>
     <configurationParameterSettings/>
-    <flowConstraints>
-      <fixedFlow>
-        <node>PosTagNamedEntityAnnotator</node>
-        <node>LocalGeneSearchAnnotator</node>
-        <node>NcbiQueryAnnotator</node>
-      </fixedFlow>
-    </flowConstraints>
+    <typeSystemDescription>
+      <imports>
+        <import location="../LocalGeneSearchTypeSystem.xml"/>
+        <import location="../PosTagNamedEntityTypeSystem.xml"/>
+      </imports>
+    </typeSystemDescription>
+    <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
       <capability>
         <inputs>
-          <type allAnnotatorFeatures="true">genetagging.Input</type>
+          <type allAnnotatorFeatures="true">genetagging.PosTagNamedEntity</type>
         </inputs>
         <outputs>
-          <type allAnnotatorFeatures="true">genetagging.NcbiResults</type>
           <type allAnnotatorFeatures="true">genetagging.FoundGene</type>
+          <type allAnnotatorFeatures="true">genetagging.UnfoundNamedEntity</type>
         </outputs>
         <languagesSupported/>
       </capability>
@@ -46,24 +36,28 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
+  <externalResourceDependencies>
+    <externalResourceDependency>
+      <key>GeneSet</key>
+      <description/>
+      <interfaceName>genetagging.GeneSetResource</interfaceName>
+      <optional>false</optional>
+    </externalResourceDependency>
+  </externalResourceDependencies>
   <resourceManagerConfiguration>
     <externalResources>
       <externalResource>
         <name>GeneSetFile</name>
         <description/>
         <fileResourceSpecifier>
-          <fileUrl>file:src/main/resources/data/genes.txt</fileUrl>
+          <fileUrl>file:data/genes.txt</fileUrl>
         </fileResourceSpecifier>
         <implementationName>genetagging.GeneSetResource</implementationName>
       </externalResource>
     </externalResources>
     <externalResourceBindings>
       <externalResourceBinding>
-        <key>LocalGeneSearchAnnotator/GeneSet</key>
-        <resourceName>GeneSetFile</resourceName>
-      </externalResourceBinding>
-      <externalResourceBinding>
-        <key>NcbiQueryAnnotator/NcbiGeneSet</key>
+        <key>GeneSet</key>
         <resourceName>GeneSetFile</resourceName>
       </externalResourceBinding>
     </externalResourceBindings>

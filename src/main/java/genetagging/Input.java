@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Oct 13 18:16:32 EDT 2012
+ * Updated by JCasGen Sat Oct 13 23:23:58 EDT 2012
  * XML source: C:/Users/Hank/workspace/hw1-hankh/src/main/resources/descriptors/collection_processing_engine/GeneTaggingTAE.xml
  * @generated */
 public class Input extends Annotation {

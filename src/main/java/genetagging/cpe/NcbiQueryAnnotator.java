@@ -1,7 +1,9 @@
 package genetagging.cpe;
 
+import genetagging.GeneSetResource;
 import genetagging.NcbiResults;
 import genetagging.PosTagNamedEntity;
+import genetagging.UnfoundNamedEntity;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,6 +11,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -21,28 +24,37 @@ import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.SAXException;
 
 public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
 
-  private static final String SUFFIX_XES = "xes";
-  private static final String SUFFIX_SES = "ses";
-  private static final String SUFFIX_OES = "oes";
-  private static final String SUFFIX_IES = "ies";
-  
   private HttpClient mClient = new DefaultHttpClient();
   private HttpGet mGet = new HttpGet();
   
+  private GeneSetResource mGeneSetResource;
+  
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    super.initialize(aContext);
+
+    try {
+      mGeneSetResource = (GeneSetResource) getContext().getResourceObject("NcbiGeneSet");
+    } catch (ResourceAccessException e) {
+      throw new ResourceInitializationException(e);
+    }
+  }
+  
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
-    System.out.println("NCBI");
-    Iterator ptneIter = aJCas.getAnnotationIndex(PosTagNamedEntity.type).iterator();
-    while (ptneIter.hasNext()) {
-      PosTagNamedEntity ptne = (PosTagNamedEntity) ptneIter.next();
-      String namedEntity = ptne.getNamedEntitiy();
+    Iterator uneIter = aJCas.getAnnotationIndex(UnfoundNamedEntity.type).iterator();
+    while (uneIter.hasNext()) {
+      UnfoundNamedEntity une = (UnfoundNamedEntity) uneIter.next();
+      String namedEntity = une.getNamedEntity();
       
       try {
         List<String> idList = searchQuery(namedEntity);
@@ -56,26 +68,21 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
               int end = result[1];
               
               NcbiResults ncbiResults = new NcbiResults(aJCas);
-              ncbiResults.setBegin(ptne.getBegin() + begin);
-              ncbiResults.setEnd(ptne.getBegin() + end);
-              ncbiResults.setId(ptne.getId());
-              ncbiResults.setResult(namedEntity.substring(begin, end));
+              ncbiResults.setBegin(une.getBegin() + begin);
+              ncbiResults.setEnd(une.getBegin() + end);
+              ncbiResults.setId(une.getId());
+              ncbiResults.setResult(namedEntity.substring(begin, end).trim());
               ncbiResults.addToIndexes();
             }
           }
+          
+          mGeneSetResource.addAll(nameList);
         }
       } catch (Exception e) {
-        throw new AnalysisEngineProcessException(e);
+        // log error
       } 
     }
-
-  }
-  
-  private String removePlural(String text) {
-    if (text.endsWith(SUFFIX_XES)) {
-      text.lastIndexOf(SUFFIX_XES);
-      
-    }
+    mGeneSetResource.save();
   }
   
   /**
@@ -87,20 +94,18 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
    */
   private int[] searchNamedEntity(String namedEntity, String name) {
     int[] result = null;
-    if (namedEntity.contains(name) && name.length() != 0) {
+    if (namedEntity.toLowerCase().contains(name.toLowerCase()) && name.length() != 0) {
       result = new int[2];
-      int begin = namedEntity.indexOf(name);
+      int begin = namedEntity.indexOf(name.toLowerCase());
       int end = begin + name.length();
 
-      while (end < namedEntity.length()) {
-        char nextChar = namedEntity.charAt(end);
-        if (nextChar == '\\' || nextChar == ' ' ) {
-          break;
-        }
-        end++;
-      }
       result[0] = begin;
       result[1] = end;
+      
+      // Check to make sure results are valid
+      if (begin < 0 || end < 0 || end < begin) {
+        return null;
+      }
     }
     
     return result;
@@ -165,4 +170,5 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
     summaryParser.parseDocument(result.getContent());
     return summaryParser.getNameList();
   }
+  
 }
