@@ -15,10 +15,21 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
+/**
+ * Annotator part of the GeneTagging Analysis Engine pipeline. The annotator uses a local gene
+ * set to search through named entities to identify any genes. 
+ * 
+ * @author Hank
+ *
+ */
 public class LocalGeneSearchAnnotator extends JCasAnnotator_ImplBase {
 
   private Set<String> mGeneSet;
 
+  /**
+   * Retrieves the gene set from {@link GeneSetResource}, if the gene set can not be retrieved,
+   * throw an exception.
+   */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
 
@@ -29,6 +40,12 @@ public class LocalGeneSearchAnnotator extends JCasAnnotator_ImplBase {
     }
   }
 
+  /**
+   * Takes the {@link PosTagNamedEntity} annotations and searches through the named entity
+   * using the gene set from {@link GeneSetResource} to determine if any genes from the gene
+   * set appear in the named entity. If a gene is found, the gene is stored in a {@link FoundGene}
+   * annotation, and if not, the named entity is stored in a {@link UnfoundNamedEntity} annotation.
+   */
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     Iterator ptneIter = aJCas.getAnnotationIndex(PosTagNamedEntity.type).iterator();
@@ -43,6 +60,8 @@ public class LocalGeneSearchAnnotator extends JCasAnnotator_ImplBase {
           int begin = result[0];
           int end = result[1];
 
+          // store gene into FoundGene annotation
+          // the begin and end offsets are adjusted to the previous offsets
           FoundGene foundGene = new FoundGene(aJCas);
           foundGene.setBegin(ptne.getBegin() + begin);
           foundGene.setEnd(ptne.getBegin() + end);
@@ -66,11 +85,12 @@ public class LocalGeneSearchAnnotator extends JCasAnnotator_ImplBase {
   }
 
   /**
-   * Search NamedEntity for specific string found from NCBI
+   * Search NamedEntity for specific string found from local gene set
    * 
-   * @param namedEntity
-   * @param name
-   * @return
+   * @param namedEntity the named entity subject of search
+   * @param name the specific gene to search for in the named entity
+   * @return an array containing the begin and end offsets of where the name is 
+   * found in the named entity
    */
   private int[] searchNamedEntity(String namedEntity, String name) {
     int[] result = null;

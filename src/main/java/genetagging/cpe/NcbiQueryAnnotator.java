@@ -2,22 +2,15 @@ package genetagging.cpe;
 
 import genetagging.GeneSetResource;
 import genetagging.NcbiResults;
-import genetagging.PosTagNamedEntity;
 import genetagging.UnfoundNamedEntity;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
@@ -30,8 +23,16 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.xml.sax.SAXException;
+import org.apache.uima.util.Level;
 
+/**
+ * Annotator part of the GeneTagging Analysis Engine pipeline. The annotator uses the named entity
+ * as a search query to retrieve a list of gene names. The list of gene names are then used to 
+ * search through named entities to identify any genes.
+ * 
+ * @author Hank
+ *
+ */
 public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
 
   private HttpClient mClient = new DefaultHttpClient();
@@ -39,6 +40,10 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
   
   private GeneSetResource mGeneSetResource;
   
+  /**
+   * Retrieves the gene set from {@link GeneSetResource}, if the gene set can not be retrieved,
+   * throw an exception.
+   */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
 
@@ -49,6 +54,13 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
     }
   }
   
+  /**
+   * Takes the {@link UnfoundNamedEntity} annotations and sends a query to the NCBI gene database
+   * using the named entity as the query string. A list of possible gene names are then returned
+   * and used to search through the named entity to determine any matching genes. If a gene is 
+   * found, the gene is stored in a {@link NcbiResults} annotation. The list of gene names are
+   * then saved to the gene set.
+   */
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     Iterator uneIter = aJCas.getAnnotationIndex(UnfoundNamedEntity.type).iterator();
@@ -57,8 +69,10 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
       String namedEntity = une.getNamedEntity();
       
       try {
+        // send NCBI query using named entity
         List<String> idList = searchQuery(namedEntity);
         if (idList.size() > 0) {
+          // retrieve summaries of ids found by search query 
           List<String> nameList = summaryQuery(idList);
           
           for (String name : nameList) {
@@ -76,21 +90,27 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
             }
           }
           
+          // add gene list to gene set
           mGeneSetResource.addAll(nameList);
         }
       } catch (Exception e) {
-        // log error
+        // log exception 
+        getContext().getLogger().log(Level.FINEST, String.format("Exception %s for %s",
+                e.toString(), namedEntity));
       } 
     }
+    
+    // save gene set
     mGeneSetResource.save();
   }
   
   /**
-   * Search NamedEntity for specific string found from NCBI
+   * Search NamedEntity for specific string found from NCBI gene database
    * 
-   * @param namedEntity
-   * @param name
-   * @return
+   * @param namedEntity the named entity subject of search
+   * @param name the specific gene to search for in the named entity
+   * @return an array containing the begin and end offsets of where the name is 
+   * found in the named entity
    */
   private int[] searchNamedEntity(String namedEntity, String name) {
     int[] result = null;
@@ -113,62 +133,68 @@ public class NcbiQueryAnnotator extends JCasAnnotator_ImplBase {
   
   
   /**
-   * Queries NCBI database for search of specific query string
+   * Queries NCBI gene database for search of specific query string
    * 
-   * @param query
-   * @return
-   * @throws URISyntaxException
-   * @throws IllegalStateException
-   * @throws ParserConfigurationException
-   * @throws SAXException
-   * @throws IOException
+   * @param query the query string to search for on NCBI gene database
+   * @return  list of ids 
+   * @throws AnalysisEngineProcessException - if an error occurs while searching or parsing
    */
-  private List<String> searchQuery(String query) throws URISyntaxException, IllegalStateException, ParserConfigurationException, SAXException, IOException {
-    // Initial Query 
-    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-    formParams.add(new BasicNameValuePair("db","gene"));
-    formParams.add(new BasicNameValuePair("term", query));
-    URI uri = URIUtils.createURI("http", "eutils.ncbi.nlm.nih.gov", -1, 
-            "/entrez/eutils/esearch.fcgi", URLEncodedUtils.format(formParams, "UTF-8"), null);
-    //System.out.println(uri.toString()); // log this
-    
-    mGet.setURI(uri);
-    HttpEntity result = mClient.execute(mGet).getEntity();
-    
-    SearchXmlParser searchParser = new SearchXmlParser();
-    searchParser.parseDocument(result.getContent());
-    return searchParser.getIdList();
+  private List<String> searchQuery(String query) throws AnalysisEngineProcessException {
+    try {
+      // create uri
+      List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+      formParams.add(new BasicNameValuePair("db", "gene"));
+      formParams.add(new BasicNameValuePair("term", query));
+      URI uri = URIUtils.createURI("http", "eutils.ncbi.nlm.nih.gov", -1,
+              "/entrez/eutils/esearch.fcgi", URLEncodedUtils.format(formParams, "UTF-8"), null);
+
+      // send query
+      mGet.setURI(uri);
+      HttpEntity result = mClient.execute(mGet).getEntity();
+
+      // parse results and return id list
+      SearchXmlParser searchParser = new SearchXmlParser();
+      searchParser.parseDocument(result.getContent());
+      return searchParser.getIdList();
+    } catch (Exception e) {
+      throw new AnalysisEngineProcessException(e);
+    } 
   }
 
   /**
    * Queries NCBI database for summaries of specified ids
-   * @param idList
-   * @return
-   * @throws URISyntaxException
-   * @throws IOException
-   * @throws IllegalStateException
-   * @throws ParserConfigurationException
-   * @throws SAXException
+   * 
+   * @param idList list of ids to retrieve summaries
+   * @return list of gene names
+   * @throws AnalysisEngineProcessException - if an error occurs while searching or parsing 
    */
-  private List<String> summaryQuery(List<String> idList) throws URISyntaxException, IOException, IllegalStateException, ParserConfigurationException, SAXException {
-    StringBuilder ids = new StringBuilder();
-    for (String id : idList) { 
-      ids.append(id);
-      ids.append(' ');
+  private List<String> summaryQuery(List<String> idList) throws AnalysisEngineProcessException {
+    try {
+      // combine ids into one string
+      StringBuilder ids = new StringBuilder();
+      for (String id : idList) {
+        ids.append(id);
+        ids.append(' ');
+      }
+
+      // create uri
+      List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+      formParams.add(new BasicNameValuePair("db", "gene"));
+      formParams.add(new BasicNameValuePair("id", ids.toString()));
+      URI uri = URIUtils.createURI("http", "eutils.ncbi.nlm.nih.gov", -1,
+              "/entrez/eutils/esummary.fcgi", URLEncodedUtils.format(formParams, "UTF-8"), null);
+
+      // send summary request
+      mGet.setURI(uri);
+      HttpEntity result = mClient.execute(mGet).getEntity();
+
+      // parse results and return gene list
+      SummaryXmlParser summaryParser = new SummaryXmlParser();
+      summaryParser.parseDocument(result.getContent());
+      return summaryParser.getNameList();
+    } catch (Exception e) {
+      throw new AnalysisEngineProcessException(e);
     }
-    
-    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-    formParams.add(new BasicNameValuePair("db","gene"));
-    formParams.add(new BasicNameValuePair("id", ids.toString()));
-    URI uri = URIUtils.createURI("http", "eutils.ncbi.nlm.nih.gov", -1, 
-            "/entrez/eutils/esummary.fcgi", URLEncodedUtils.format(formParams, "UTF-8"), null);
-    
-    mGet.setURI(uri);
-    HttpEntity result = mClient.execute(mGet).getEntity();
-    
-    SummaryXmlParser summaryParser = new SummaryXmlParser();
-    summaryParser.parseDocument(result.getContent());
-    return summaryParser.getNameList();
   }
   
 }

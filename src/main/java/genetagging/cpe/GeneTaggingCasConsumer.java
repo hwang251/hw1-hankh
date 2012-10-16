@@ -1,8 +1,6 @@
 package genetagging.cpe;
 import genetagging.FoundGene;
-import genetagging.Input;
 import genetagging.NcbiResults;
-import genetagging.PosTagNamedEntity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,25 +14,39 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 
-
+/**
+ * CAS Consumer made specifically for genetagging collection processing engine. 
+ * The CAS consumer retrieves annotations and writes it to a file.
+ * @author Hank
+ *
+ */
 public class GeneTaggingCasConsumer extends CasConsumer_ImplBase {
 
-  public static final String PARAM_OUTPUTFILE = "OutputFile";
+  private static final String PARAM_OUTPUTFILE = "OutputFile";
   
   private File mOutputFile;
   
+  /**
+   * Retrieves a file defined by the parameter settings, and if the file does not exist,
+   * attempt to create the file.
+   */
   public void initialize() throws ResourceInitializationException {
     mOutputFile = new File(((String) getConfigParameterValue(PARAM_OUTPUTFILE)).trim());
     if (!mOutputFile.exists()) {
       try {
         mOutputFile.createNewFile();
       } catch (IOException e) {
-        new ResourceInitializationException(e);// fix later
+        new ResourceInitializationException("can_not_create_file", 
+                new Object[] {mOutputFile.getPath(), PARAM_OUTPUTFILE, this.getMetaData().getName()});
       }
     }
   }
   
-  @Override
+  /**
+   * Retrieves the {@link FoundGene} and {@link NcbiResults} annotations 
+   * and writes the sentence id, begin-offset, end-offset, and gene to the 
+   * output file.
+   */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     JCas jcas;
     try {
