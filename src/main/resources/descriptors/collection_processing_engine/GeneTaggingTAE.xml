@@ -52,7 +52,7 @@
         <name>GeneSetFile</name>
         <description/>
         <fileResourceSpecifier>
-          <fileUrl>file:src/main/resources/data/genes.txt</fileUrl>
+          <fileUrl>file:data/genes.txt</fileUrl>
         </fileResourceSpecifier>
         <implementationName>genetagging.GeneSetResource</implementationName>
       </externalResource>
